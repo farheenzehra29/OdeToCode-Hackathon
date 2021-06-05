@@ -1,0 +1,189 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Python-Bot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box
+        }
+
+        /* Set height of body and the document to 100% */
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial;
+        }
+        #chatbox {
+        margin-left: auto;
+        margin-right: auto;
+        width: 40%;
+        margin-top: 60px;
+      }
+      #userInput {
+        margin-left: auto;
+        margin-right: auto;
+        width: 40%;
+        margin-top: 60px;
+        position: relative;
+      }
+      #textInput {
+        width: 90%;
+        border: none;
+        border-bottom: 3px solid black;
+        font-family: monospace;
+        font-size: 17px;
+      }
+      .userText {
+        color: white;
+        font-family: monospace;
+        font-size: 17px;
+        text-align: right;
+        line-height: 30px;
+      }
+      .userText span {
+        background-color: #808080;
+        padding: 10px;
+        border-radius: 2px;
+      }
+      .botText {
+        color: white;
+        font-family: monospace;
+        font-size: 17px;
+        text-align: left;
+        line-height: 30px;
+      }
+      .botText span {
+        background-color: #4169e1;
+        padding: 10px;
+        border-radius: 2px;
+      }
+      #tidbit {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 300px;
+      }
+      .boxed {
+        margin-left: auto;
+        margin-right: auto;
+        width: 78%;
+        margin-top: 60px;
+        border: 1px solid green;
+      }
+      #record {
+      background-color: #555555;
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      top:80 px
+      left: 50%;
+}
+      #userInput
+      img { position: absolute; top: 2px; right: 5px }
+    </style>
+</head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<body>
+
+
+    <div>
+        <h1 align="center"><b>Welcome to Python-BOT</b></h1>
+
+        <div class="boxed">
+            <div>
+                <div id="chatbox">
+                    <p class="botText">
+                        <span class="botData">Hi! I'm Python-BOT your personal ChatBot</span>
+                    </p>
+                </div>
+                  <div id="userInput">
+                    <input id="textInput" type="text" name="msg" placeholder="Message" />
+                    <img src="https://webaudiodemos.appspot.com/AudioRecorder/img/mic128.png" alt="" width=25 onclick="recordFunc();" />
+                    <button id='record' onClick="recordFunc()" >Record</button></a>
+                </div>
+            </div>
+
+            <script>
+                function getBotResponse() {
+                    var rawText = $("#textInput").val();
+                    var userHtml = '<p class="userText"><span>' + rawText + "</span></p>";
+                    $("#textInput").val("");
+                    $("#chatbox").append(userHtml);
+                    document
+                        .getElementById("userInput")
+                        .scrollIntoView({ block: "start", behavior: "smooth" });
+
+
+                    $.get("/get", { msg: rawText}).done(function (data) {
+                        var botHtml = '<p class="botText"><span class="botData">' + data + "</span></p>";
+                        $("#chatbox").append(botHtml);
+                        document
+                            .getElementById("userInput")
+                            .scrollIntoView({ block: "start", behavior: "smooth" });
+                    });
+                    var a= document.getElementsByClassName("botData");
+                   len=a.length;
+                   console.log(len)
+                   if(len==1){
+                    ques=a[len-1].innerHTML;
+                   }
+                   else{
+                   ques=a[len-1].innerHTML;
+                   }
+
+
+                   $.get("/calScore", { msg:rawText ,msg2:ques}).done(function (data) {});
+                }
+                $("#textInput").keypress(function (e) {
+                    if (e.which == 13) {
+                      getBotResponse();
+
+                    }
+                });
+
+
+           function recordFunc(){
+                    $.get("/record", {}).done(function (data) {
+                        document.getElementById("textInput").value = data;
+                    });
+                    }
+           var globval=" "
+           function showScore(){
+           var a= document.getElementsByClassName("botData");
+           len=a.length;
+           console.log(len)
+           if(len==1){
+            rawText=a[len-1].innerHTML;
+           }
+           else{
+           rawText=a[len-2].innerHTML;
+           }
+
+        $.get("/score", { msg: rawText }).done(function (data) {
+                        alert(data);
+                    });
+
+           }
+
+
+            </script>
+        </div>
+    </div>
+    <div class="container">
+  <div class="row">
+    <div class="col text-center">
+      <button type="button" class="btn btn-primary btn-lg" onClick="showScore()">Show Scores</button>
+    </div>
+  </div>
+</div>
+
+
+
+</body>
+</html>
